@@ -17,15 +17,20 @@
             <button class="default__submit" @click="calculate()">Рассчитать</button>
           </form>
         </div>
-        <div v-if="!calculated" class="default__reduce">
+        <div v-if="calculated" class="calculated">
+          <h2 class="default__text">Итого можете внести в качестве досрочных:</h2>
+          <form>
+            <div class="calculated__form" v-for="item in deduction" :key="item">
+              <label class="calculated__input">
+                <input type="checkbox" v-bind:id="item.year"><span>{{ item.sum }} рублей&nbsp; <span class="calculated__span"> {{ preposition(item) }} {{ item.year }}{{ ending(item) }} год</span></span>
+              </label>
+            </div>
+          </form>
+        </div>
+        <div class="default__reduce">
           <h3 class="default__text">Что уменьшаем?</h3>
           <button @click="event => switchReduce(event)" value="payment" class="reduce__button" v-bind:class="{ 'reduce__button_active':this.paymentReduce }">Платеж</button>
           <button @click="event => switchReduce(event)" value="term" class="reduce__button" v-bind:class="{ 'reduce__button_active': !this.paymentReduce }">Срок</button>
-        </div>
-        <div v-if="calculated" class="calculated">
-          <p>Итого можете внести в качестве досрочных:</p>
-          <p>{{ deduction }}</p>
-
         </div>
         <div>
           <button class="default__addbutton">Добавить</button>
@@ -45,7 +50,9 @@ export default {
       salary: '',
       paymentReduce: true,
       calculated: '',
-      deduction: 0,
+      deduction: [],
+      finalPayment: 0,
+      steps: 0,
     }
   },
   methods:{
@@ -61,11 +68,35 @@ export default {
     },
     calculate(){
       if (this.salary !== ''){
+        this.deduction = [];
         let salary = this.salary;
-        let deduction = salary*12*0.13;
+        let deduction = Math.round(salary*12*0.13);
+        let steps = Math.floor(260000/deduction);
+        for (let i=1; i<=steps;i++){
+          let obj = {};
+          obj.sum = deduction;
+          obj.year = i;
+          this.deduction.push(obj);
+        }
+        let finalPayment = Math.round(260000-deduction*steps);
+        let lastObj = {};
+        lastObj.sum = finalPayment;
+        lastObj.year = steps+1;
         this.calculated = true;
-        this.deduction = deduction;
+        this.deduction.push(lastObj);
       }
+    },
+    ending(item){
+      if(item.year === 1||item.year === 4||item.year === 5||item.year === 9 || item.year > 9){
+        return '-ый';
+      }else if(item.year === 2||item.year === 6||item.year === 7||item.year === 8){
+        return '-ой';
+      }else if(item.year === 3) return '-ий'
+    },
+    preposition(item){
+      if (item.year === 2){
+        return 'во';
+      }else return 'в';
     }
   }
 }
@@ -74,6 +105,11 @@ export default {
 <style scoped lang="less">
   .main{
     width: 100%;
+  }
+  .checkbox{
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
   }
   .content{
     height: 100%;
@@ -215,5 +251,55 @@ export default {
   .default__addbutton{
     .button__classic_small;
     width: 100%;
+  }
+  .calculated{
+    margin-top: 16px;
+  }
+  .calculated__form{
+    width: 100%;
+    border-bottom: 1px solid #DFE3E6;
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 700;
+    padding: 16px 0;
+    color: #000000;
+  }
+  .calculated__span{
+    font-weight: 400;
+  }
+  .calculated__input>input{
+    .checkbox;
+  }
+  .calculated__input>span {
+    display: inline-flex;
+    align-items: center;
+    user-select: none;
+  }
+  .calculated__input>span::before{
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    border: 1px solid #DFE3E6;
+    border-radius: 6px;
+    margin-right: 0.5em;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 70% 70%;
+  }
+  .calculated__input>input:not(:disabled):not(:checked)+span:hover::before {
+    border-color: #000000;
+  }
+  .calculated__input>input:not(:disabled):active+span::before {
+    border-color: #FF5E56;
+  }
+  .calculated__input>input:checked+span::before {
+    background-color: #FF5E56;
+    background-image: url("../assets/checked.svg");
+  }
+  .calculated__input>input:disabled+span::before {
+    background-color: #BEC5CC;
   }
 </style>
