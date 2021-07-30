@@ -28,7 +28,7 @@
           </form>
         </div>
         <div class="default__reduce">
-          <h3 class="default__text">Что уменьшаем?</h3>
+          <h3 class="reduce__text">Что уменьшаем?</h3>
           <button @click="event => switchReduce(event)" value="payment" class="reduce__button" v-bind:class="{ 'reduce__button_active':this.paymentReduce }">Платеж</button>
           <button @click="event => switchReduce(event)" value="term" class="reduce__button" v-bind:class="{ 'reduce__button_active': !this.paymentReduce }">Срок</button>
         </div>
@@ -112,7 +112,7 @@ export default {
     opacity: 0;
   }
   .content{
-    height: 100%;
+    min-height: 100%;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -139,10 +139,13 @@ export default {
     }
   }
   .default__container{
-    width: 50%;
+    width: 39%;
     background-color: #FFFFFF;
-    padding: 32px 16px 16px 16px;
+    padding: 32px;
     text-align: left;
+    border-radius: 30px;
+    margin-top: 120px;
+    margin-bottom: 88px;
   }
   .default__text{
     font-weight: 700;
@@ -158,18 +161,19 @@ export default {
   .default__name{
     margin: 0 0 16px 0;
     font-weight: 700;
-    font-size: 18px;
-    line-height: 24px;
+    font-size: 28px;
+    line-height: 40px;
     color: #000000;
   }
   .default__description{
-    font-size: 12px;
-    line-height: 16px;
+    font-size: 14px;
+    line-height: 24px;
     color: #808080;
     margin-bottom: 0;
   }
   .default__reduce{
     margin-top: 24px;
+    display: flex;
   }
   .default__textinput{
     margin: 8px 0;
@@ -235,6 +239,11 @@ export default {
       border-style: solid;
     }
   }
+  .reduce__text{
+    .default__text;
+    margin-top: 10px;
+    margin-right: 32px;
+  }
   .reduce__button{
     .button;
     .default__text;
@@ -242,7 +251,7 @@ export default {
     background: #EEF0F2;
     border: none;
     padding: 7px 12px;
-    margin: 30px 8px 140px 0;
+    margin: 0 16px 32px 0;
   }
   .reduce__button_active{
     background: linear-gradient(255.35deg, #DC3131 0.83%, rgba(255, 79, 79, 0) 108.93%), #FF5E56;
@@ -301,5 +310,55 @@ export default {
   }
   .calculated__input>input:disabled+span::before {
     background-color: #BEC5CC;
+  }
+  
+  @media (max-width: 788px) {
+    .default__container{
+      padding: 32px 16px;
+    }
+    .default__name{
+      font-size: 18px;
+      line-height: 24px;
+    }
+    .default__description{
+      font-size: 12px;
+      line-height: 16px;
+    }
+    .default__reduce{
+      display: block;
+    }
+    .reduce__text{
+      margin-bottom: 30px;
+    }
+  }
+  @media (max-width: 450px) {
+    .default__name{
+      font-size: 12px;
+      line-height: 12px;
+    }
+    .default__description{
+      font-size: 8px;
+      line-height: 12px;
+    }
+    .default__text{
+      font-size: 9px;
+      line-height: 9px;
+    }
+    .default__textinput{
+      width: 85%;
+      line-height: 10px;
+      font-size: 8px;
+    }
+    .default__submit{
+      font-size: 11px;
+    }
+    .reduce__text{
+      font-size: 11px;
+    }
+    .reduce__button{
+      font-size: 11px;
+      line-height: 15px;
+      margin: 0 3px 26px 0;
+    }
   }
 </style>
